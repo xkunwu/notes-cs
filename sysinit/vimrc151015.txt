@@ -116,6 +116,7 @@ vnoremap <C-Insert> "+y
 " cut
 vnoremap <S-Del> "+x
 " paste
+set pastetoggle=<F8>
 map <S-Insert>                "+gP
 cmap <S-Insert>                <C-R>+
 
