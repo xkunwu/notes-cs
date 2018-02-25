@@ -1,0 +1,12 @@
+rsync -auvh -e ssh source target
+    -a: archive mode
+    -u: only update new
+    -v: verbose
+    -h: human readable
+    -e ssh: execute ssh
+
+if not sure, use:
+    -n: dry-run without actual sync
+
+scp is also ok, but remember to add:
+    -p: preserve timestamp
