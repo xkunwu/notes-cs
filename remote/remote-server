@@ -1,6 +1,11 @@
 Mount remote file system over ssh:
 
 <code>
+sshfs user@domain:/remote/directory/ /local/directory/
+fusermount -u /local/directory/
+</code>
+
+<code>
 sudo mkdir /mnt/linbath
 
 sudo sshfs -o allow_other xw943@linux.bath.ac.uk:/u/q/xw943/ /mnt/linbath/
@@ -51,4 +56,3 @@ Wget remote directory:
 <code>
 wget -r --no-parent --no-host-directories
 </code>
-
