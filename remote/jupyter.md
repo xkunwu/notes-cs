@@ -2,29 +2,29 @@
 
 1. First, connect to the remote server if you haven’t already
 
-<code>
+```
 ssh remote_server
-</code>
+```
 
 1.5. Jupyter takes browser security very seriously, so in order to access a remote session from a local browser we need to set up a password associated with the remote Jupyter session. This is stored in jupyter_notebook_config.py which by default lives in ~/.jupyter. You can edit this manually, but the easiest option is to set the password by running Jupyter with the password argument:
 
-<code>
+```
 jupyter-notebook password
-</code>
+```
 
 This password will be used to access any Jupyter session running from this installation, so pick something sensible. You can set a new password at any time on the remote server in exactly the same way.
 
 2. Launch a Jupyter session on the remote server.
 
-<code>
+```
 jupyter-notebook --port=8888 --no-browser &
-</code>
+```
 
 3. Now Jupyter is running on our remote server, we just need to create an ssh tunnel between a port on our machine and the port our Jupyter session is using on the remote server. On our local machine:
 
-<code>
+```
 ssh -N -f -L 8888:localhost:8888 remote_server
-</code>
+```
 
 - N tells ssh we won’t be running any remote processes using the connection. This is useful for situations like this where all we want to do is port forwarding.
 
@@ -36,6 +36,6 @@ ssh -N -f -L 8888:localhost:8888 remote_server
 
 5. To close the SSH tunnel on the local machine:
 
-<code>
+```
 ps aux | grep localhost:8888
-</code>
+```

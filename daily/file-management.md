@@ -1,6 +1,11 @@
-Copy & Paste
+### This prints the file count per directory for the current directory level:
+```
+find . -maxdepth 1 -type d -print0 | while read -d '' -r dir; do num=$(find "$dir" -ls | wc -l); printf "%5d files in directory %s\n" "$num" "$dir"; done | sort -rn -k1
+```
 
-<code>
+### Copy & Paste
+
+```
 # cp - force overwrite without confirmation prompt:
 yes | cp -rf
 
@@ -9,39 +14,39 @@ cp -n
 
 # recursively move a tree:
 cp -al source/* dest/ && rm -r source/*
-</code>
+```
 
 ----
 
-To get the details of linked libraries:
+### To get the details of linked libraries:
 
-<code>
+```
 ldconfig -p | grep libname
-</code>
+```
 
 ----
 
-To recursively give **directories** read&execute privileges:
-<code>
+### To recursively give **directories** read&execute privileges:
+```
 find /path/to/base/dir -type d -exec chmod 755 {} +
-</code>
+```
 
-To recursively give **files** read privileges:
-<code>
+#### To recursively give **files** read privileges:
+```
 find /path/to/base/dir -type f -exec chmod 644 {} +
-</code>
+```
 
-Recursively rename file extension:
+### Recursively rename file extension:
 
-<code>
+```
 find . -name '*.PNG' -exec rename -v 's/\.PNG$/\.png/i' {} \;
-</code>
+```
 
 ----
 
-Compress PDF:
+### Compress PDF:
 
-<code>
+```
 :: -dPDFSETTINGS=/screen   (screen-view-only quality, 72 dpi images)
 :: -dPDFSETTINGS=/ebook    (low quality, 150 dpi images)
 :: -dPDFSETTINGS=/printer  (high quality, 300 dpi images)
@@ -51,5 +56,4 @@ Compress PDF:
 "C:\Program Files\gs\gs9.21\bin\gswin64c" -sDEVICE=pdfwrite -dCompatibilityLevel=1.5 -dNOPAUSE -dQUIET -dBATCH -dPDFSETTINGS=/screen -sOutputFile=output.pdf input.pdf
 
 "C:\Program Files\gs\gs9.21\bin\gswin64c" -sDEVICE=pdfwrite -dCompatibilityLevel=1.5 -dNOPAUSE -dQUIET -dDownsampleColorImages=true -dDownsampleGrayImages=true -dDownsampleMonoImages=true -dColorImageResolution=150 -dGrayImageResolution=150 -dMonoImageResolution=150 -dColorImageDownsampleThreshold=1.0 -dGrayImageDownsampleThreshold=1.0 -dMonoImageDownsampleThreshold=1.0 -o output-150.pdf input.pdf
-</code>
-
+```

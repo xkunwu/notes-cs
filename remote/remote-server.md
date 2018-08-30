@@ -1,58 +1,70 @@
-Mount remote file system over ssh:
+### change line ending recursively
 
-<code>
+```
+find . -type f -print0 | xargs -0 dos2unix
+```
+
+### Mount remote file system over ssh:
+
+```
 sshfs user@domain:/remote/directory/ /local/directory/
 fusermount -u /local/directory/
-</code>
+```
 
-<code>
+Example:
+
+```
 sudo mkdir /mnt/linbath
 
 sudo sshfs -o allow_other xw943@linux.bath.ac.uk:/u/q/xw943/ /mnt/linbath/
 
 sudo umount /mnt/linbath
-</code>
+```
 
 Permanently mounting the remote file system:
 
-<code>
+```
 sudo vim /etc/fstab
 
 sshfs#xw943@linux.bath.ac.uk:/u/q/xw943/ /mnt/linbath
-</code>
+```
 
-----
+---
 
-Scp from remote server:
+### Scp from remote server:
 
-<code>
+```
 ssh ${1:-sipadan} 'rm -rf /tmp/calibre && mkdir /tmp/calibre && find $HOME/calibre/ -name "*.epub" -mtime -'${2:-1}' -type f -exec echo {} ; -exec cp {} /tmp/calibre ;' && scp -p ${1:-sipadan}:/tmp/calibre/*.epub ./
-</code>
+```
 
-Collect files and sync up to Baidu cloud server:
+### Collect files and sync up to Baidu cloud server:
 
-<code>
+```
 find /home/xwu/calibre/calibre -name "*.epub" -type f -exec echo {} \; -exec mv {} /home/xwu/calibre/bysync \; && /home/xwu/anaconda2/bin/bypy -v syncup /home/xwu/calibre/bysync/ calibre/
-</code>
+```
 
-Schedule a tast and redirect log:
+### Schedule a tast and redirect log:
 
-<code>
+```
 crontab -e
 
 10 20 * * * /home/xwu/calibre/.bysync.sh>> /var/log/cronlog 2>&1
-</code>
+```
 
-----
+---
 
-Syncronize with remote server:
+### Syncronize with remote server:
 
-<code>
+```
 rsync -avh -e ssh --exclude=.git --exclude=.rsync-proj.sh ./ ${1:-sipadan}:projects/${PWD##*/}
-</code>
+```
 
-Wget remote directory:
+### Wget remote directory:
 
-<code>
+```
 wget -r --no-parent --no-host-directories
-</code>
+```
+
+---
+### Server setup
+landscape-common

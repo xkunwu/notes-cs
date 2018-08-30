@@ -1,3 +1,0 @@
-# batch reduce image size
-for file in *.jpg; do convert -resize 25% $file $file; done
-

@@ -1,0 +1,14 @@
+# path related
+export PATH=$HOME/local/bin:/usr/local/cuda/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cudnn/lib64:$LD_LIBRARY_PATH
+
+# some alias
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias cd..='cd ..'
+alias l='ls -CF'
+alias ll='ls -alFh'
+alias la='ls -AF'
+alias md='mkdir -p'
+alias rex='rsync -auvh -e ssh'
