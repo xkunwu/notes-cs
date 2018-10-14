@@ -1,3 +1,23 @@
+### feed password (INSECURE!)
+```
+sudo apt-get install sshpass
+export SSHPASS='my_pass_here'
+sshpass -e ssh server command
+```
+
+### X-server authority problem
+-   check the ownership of .Xauthority and remove .Xauthority-*
+-   or use of xauth -b to break any lock files that may be hanging around
+
+
+### start Cygwin/X
+```
+XWin :0 -multiwindow -clipboard -silent-dup-error
+DISPLAY=:0.0 ssh -X palau
+DISPLAY=:0.0 ssh -f -X palau xterm
+```
+
+
 ### change line ending recursively
 
 ```
@@ -66,5 +86,5 @@ wget -r --no-parent --no-host-directories
 ```
 
 ---
-### Server setup
+### Server setup to show info at login
 landscape-common

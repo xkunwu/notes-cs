@@ -2,9 +2,25 @@
 ```
 find . -maxdepth 1 -type d -print0 | while read -d '' -r dir; do num=$(find "$dir" -ls | wc -l); printf "%5d files in directory %s\n" "$num" "$dir"; done | sort -rn -k1
 ```
+or just simply output file count:
+```
+find . -type f | wc -l
+```
+
+### find disk & mount
+```
+lsblk
+sudo mount disk_loc mount_loc
+```
+
+
+### ls directory with large list of file
+```
+ls -U | more
+```
+
 
 ### Copy & Paste
-
 ```
 # cp - force overwrite without confirmation prompt:
 yes | cp -rf

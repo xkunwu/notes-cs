@@ -11,3 +11,14 @@ docker rm $(docker ps -a -q)
 ```
 docker rmi $(docker images -f "dangling=true" -q)
 ```
+
+### Returns how many non-0 exit codes were returned.
+```
+docker-compose ps -q | xargs docker inspect -f '{{ .State.ExitCode }}' | grep -v 0 | wc -l | tr -d ' '
+```
+
+### sent to background, then reattach
+```
+C+p C+q
+docker attach
+```
