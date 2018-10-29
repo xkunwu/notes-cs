@@ -17,12 +17,12 @@ which python
 cd ~/miniconda3/bin/
 ll python
 module load patchelf/0.8
-patchelf --print-interpreter ./python3.7
-patchelf --print-rpath ./python3.7
-patchelf --set-interpreter /apps/gnu/glibc/2.23/lib/ld-linux-x86-64.so.2 ./python3.7
-patchelf --print-interpreter ./python3.7
-patchelf --force-rpath --set-rpath \$ORIGIN/../lib:/apps/gnu/glibc/2.23/lib ./python3.7
-patchelf --print-rpath ./python3.7
+patchelf --print-interpreter ~/bin/python
+patchelf --print-rpath ~/bin/python
+patchelf --set-interpreter /apps/gnu/glibc/2.23/lib/ld-linux-x86-64.so.2 ~/bin/python
+patchelf --print-interpreter ~/bin/python
+patchelf --force-rpath --set-rpath \$ORIGIN/../lib:/apps/gnu/glibc/2.23/lib ~/bin/python
+patchelf --print-rpath ~/bin/python
 python
 ### add privatemodules
 cat ~/.bashrc

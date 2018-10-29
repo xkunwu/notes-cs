@@ -1,3 +1,9 @@
+### change owner recursively
+```
+id
+chown -R 1000:1000 some_path
+```
+
 ### quick cleanups
 - Kill all containers that are currently running:
 ```
@@ -11,6 +17,13 @@ docker rm $(docker ps -a -q)
 ```
 docker rmi $(docker images -f "dangling=true" -q)
 ```
+
+## commit with changes
+docker commit --change "ENV PATH=/opt/conda/bin:$PATH" 73a12e028083 tensorflow-1.12
+
+## restart an existing container after it exited (changes are still there)
+docker start  `docker ps -q -l` # restart it in the background
+docker attach `docker ps -q -l` # reattach the terminal & stdin
 
 ### Returns how many non-0 exit codes were returned.
 ```

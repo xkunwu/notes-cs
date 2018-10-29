@@ -27,8 +27,10 @@ git push
 ```
 
 ## Ignore file mode change (especially in Windows)
+Checkout as-is, commit Unix-style
 ```
-git config core.filemode false
+git config --global core.fileMode false
+git config --global core.autocrlf input
 ```
 
 

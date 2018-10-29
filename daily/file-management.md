@@ -7,6 +7,11 @@ or just simply output file count:
 find . -type f | wc -l
 ```
 
+### disk usage summary
+```
+du -smhc *
+```
+
 ### find disk & mount
 ```
 lsblk
