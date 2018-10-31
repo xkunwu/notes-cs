@@ -61,3 +61,6 @@ git config --get --local core.filemode
 git config --local core.fileMode false
 git config --global core.fileMode false
 ```
+
+## submodule
+git submodule update --recursive

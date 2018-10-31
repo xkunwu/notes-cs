@@ -24,6 +24,11 @@ sudo mount disk_loc mount_loc
 ls -U | more
 ```
 
+### count all the lines of code in a directory recursively
+```
+find . \( -name '*.py' -o -name '*.h' -o -name '*.cpp' \) | xargs wc -l
+```
+
 
 ### Copy & Paste
 ```
