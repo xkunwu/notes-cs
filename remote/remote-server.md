@@ -17,6 +17,13 @@ DISPLAY=:0.0 ssh -X palau
 DISPLAY=:0.0 ssh -f -X palau xterm
 ```
 
+### x11vnc
+sudo apt install xfce4 xfce4-goodies tightvncserver
+
+ssh -L 5901:127.0.0.1:5901 -C -N palau
+sudo apt install tightvnc-java
+vncviewer palau:1
+
 
 ### change line ending recursively
 
@@ -86,6 +93,31 @@ wget -r --no-parent --no-host-directories
 ```
 
 ---
+
+### Public Key Authentication
+-   Create files and set the permissions correctly (*both* side):
+mkdir ~/.ssh/
+chmod 0700 ~/.ssh/
+
+-   Create a key pair (*client* side).
+ssh-keygen -t ed25519 -f ~/.ssh/palau_key
+
+-   Transfer *only* the public key to remote machine.
+scp ~/.ssh/palau_key.pub palau:.ssh/
+
+-   Add the new public key to the authorized_keys file (*server* side)
+touch ~/.ssh/authorized_keys
+chmod 0600 ~/.ssh/authorized_keys
+cat ~/.ssh/palau_key.pub >> ~/.ssh/authorized_keys
+
+-   Test the keys
+ssh -i ~/.ssh/palau_key palau
+
+-   Associating Keys Permanently with a Server ()
+# ~/.ssh/config
+Host palau
+	IdentityFile ${HOME}/.ssh/palau_key
+
 ### Server setup to show info at login
 landscape-common
 

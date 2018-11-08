@@ -25,3 +25,11 @@
   - scripts
     - helper.py
 ```
+
+### How to view CMake cache variables
+-A: advanced variables
+-H: help documentation
+```
+cmake -L -N
+cmake -LAH -N
+```

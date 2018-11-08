@@ -52,14 +52,12 @@ ldconfig -p | grep libname
 
 ----
 
-### To recursively give **directories** read&execute privileges:
+### To recursively give proper privileges:
+Note: '+' means arguments to a single command
 ```
-find /path/to/base/dir -type d -exec chmod 755 {} +
-```
-
-#### To recursively give **files** read privileges:
-```
-find /path/to/base/dir -type f -exec chmod 644 {} +
+find . -type d -exec chmod 755 {} \+
+find . -type f -exec chmod 644 {} \+
+find . -type f -name "*.sh" -exec chmod +x {} \+
 ```
 
 ### Recursively rename file extension:
