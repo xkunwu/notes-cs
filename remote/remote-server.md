@@ -6,8 +6,10 @@ sshpass -e ssh server command
 ```
 
 ### X-server authority problem
+```
 -   check the ownership of .Xauthority and remove .Xauthority-*
 -   or use of xauth -b to break any lock files that may be hanging around
+```
 
 
 ### start Cygwin/X
