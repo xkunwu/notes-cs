@@ -19,11 +19,16 @@ DISPLAY=:0.0 ssh -f -X palau xterm
 
 ### x11vnc
 sudo apt install xfce4 xfce4-goodies tightvncserver
-
-ssh -L 5901:127.0.0.1:5901 -C -N palau
 sudo apt install tightvnc-java
+
+ssh -N -f -L 5901:localhost:5901 palau
+vncviewer localhost:1
 vncviewer palau:1
 
+### To display open ports and established TCP connections:
+```
+netstat -vatn
+```
 
 ### change line ending recursively
 
@@ -117,6 +122,10 @@ ssh -i ~/.ssh/palau_key palau
 # ~/.ssh/config
 Host palau
 	IdentityFile ${HOME}/.ssh/palau_key
+
+-   Add Identity until next restart
+ssh-add ~/.ssh/keyfile
+ssh-add -l
 
 ### Server setup to show info at login
 landscape-common

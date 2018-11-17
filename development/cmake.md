@@ -27,9 +27,12 @@
 ```
 
 ### How to view CMake cache variables
--A: advanced variables
--H: help documentation
 ```
+-L[A][H]: List non-advanced cached variables
+    -A: advanced variables
+    -H: help documentation
+-N: View mode only
+
 cmake -L -N
 cmake -LAH -N
 ```

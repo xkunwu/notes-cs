@@ -18,7 +18,7 @@ This password will be used to access any Jupyter session running from this insta
 
 ```
 jupyter-notebook --port=8888 --no-browser &
-jupyter-notebook --ip 0.0.0.0 --port=8888 --no-browser --allow-root &
+jupyter-notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root &
 ```
 
 3. Now Jupyter is running on our remote server, we just need to create an ssh tunnel between a port on our machine and the port our Jupyter session is using on the remote server. On our local machine:
