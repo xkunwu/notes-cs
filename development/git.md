@@ -34,6 +34,19 @@ git diff -p -R --no-color \
 git config --global --add alias.permission-reset '!git diff -p -R --no-color | grep -E "^(diff|(old|new) mode)" --color=never | git apply'
 git permission-reset
 
+### compare HEAD with the previous commit
+```
+note: @ is a alias for HEAD
+note: ~ and ^ are the same when only going one commit back
+note: comparison to HEAD is default
+note: Two dots is the default in git diff
+note: Diff with three dots shows the differences starting at the last *common* commit
+git diff HEAD^ HEAD
+git diff @~1..@
+git show
+git diff commit_id
+```
+
 ### discard unstaged changes
 git checkout -- .
 

@@ -1,7 +1,9 @@
 "--------------------------------------------------------------------------------
 " basics
 "--------------------------------------------------------------------------------
-set nocompatible showcmd showmode
+set nocompatible
+set term=xterm
+set showcmd showmode
 "set lines=64 columns=120
 set encoding=utf-8
 set termencoding=utf-8
@@ -54,7 +56,8 @@ autocmd InsertLeave * set nocul
 "let &t_EI = "\<Esc>[2 q"
 
 " mouse scroll
-set mouse=v
+"set mouse=v
+set mouse=a
 
 
 "--------------------------------------------------------------------------------
@@ -101,22 +104,29 @@ set foldlevel=100 " Don't autofold anything (but I can still fold manually)
 "--------------------------------------------------------------------------------
 set clipboard=unnamedplus
 " copy
-vnoremap <C-Insert> "+y
-"vnoremap <Leader>y "+y
+"vnoremap <C-Insert> "+y
+vnoremap <Leader>y "+y
 " cut
-vnoremap <S-Del> "+x
+"vnoremap <S-Del> "+x
+vnoremap <Leader>x "+y
 " paste
 set pastetoggle=<F8>
 map <S-Insert>        "+gP
 cmap <S-Insert>        <C-R>+
 " substitute
-"nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
-nnoremap <Leader>s :%s/\<<C-r><C-w>\>//c<Left><Left>
+"nnoremap <Leader>s :%s/\<<C-r><C-w>\>//c<Left><Left>
+nnoremap <Leader>s :%s/\<<C-r><C-w>\>/<C-r><C-w>/c<Left><Left>
+"nnoremap <Leader>s :%s/\<<C-r><C-w>\>/<C-R>"/c<Left><Left>
+nnoremap <Leader>S :%s/\<<C-r><C-w>\>/<C-R>*/c
+"vnoremap <Leader>S y:%s/<C-r><C-r>"//c<Left><Left>
+vnoremap <Leader>s y:%s/<C-r><C-r>"/<C-R>"/c<Left><Left>
+vnoremap <Leader>S y:%s/<C-r><C-r>"/<C-R>*/c
 
 "--------------------------------------------------------------------------------
 " QuickFix
 "--------------------------------------------------------------------------------
-nnoremap <F5> :buffers<CR>:buffer<Space>
+nnoremap <leader>b :buffers<CR>:buffer<Space>
+nnoremap <leader><tab> :b#<CR>
 nmap <F6> :tabn<cr> " show next tab
 nmap <S-F6> :tabp<cr> " show prev tab
 
@@ -129,11 +139,29 @@ cmap W!! w !sudo tee > /dev/null %
 " open the file explorer, and hit another - to move up one directory
 nmap - :Explore!<CR>
 nmap _ :Rexplore<CR>
+" let g:netrw_banner = 0 " Removing the banner
 let g:netrw_liststyle = 3 " 3: tree style listing
 let g:netrw_browse_split = 0 " =0: re-using the same window  (default)
 " let g:netrw_preview = 1 " =1 preview window shown in a vertically split window.
 " let g:netrw_altv = 1 " right splitting
+" let g:netrw_winsize = 25 " sets the width to 25% of the page
 
+" select a jump in the list
+function! GotoJump()
+  jumps
+  let j = input("Please select your jump: ")
+  if j != ''
+    let pattern = '\v\c^\+'
+    if j =~ pattern
+      let j = substitute(j, pattern, '', 'g')
+      execute "normal " . j . "\<c-i>"
+    else
+      execute "normal " . j . "\<c-o>"
+    endif
+  endif
+endfunction
+nmap <Leader>j :call GotoJump()<CR>
+nnoremap <leader>o :oldfiles<CR>
 
 "--------------------------------------------------------------------------------
 " Tabline

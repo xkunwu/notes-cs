@@ -17,3 +17,10 @@ mytarget:
     echo msg=$$msg ;\
     }
 ```
+
+### System wide C++ change on Ubuntu:
+Clang produces better error messages
+GCC has much better and more complete support for C++11 features
+```
+sudo update-alternatives --config c++
+```

@@ -9,6 +9,7 @@
     A tab page is a collection of windows.
 
 ## buffers
+```
 :b4         " switch to buffer number 4
 :bn         " switch to next buffer in the buffer list
 :bp         " switch to previous buffer in the buffer list
@@ -16,6 +17,7 @@
 :b#         " switch to the alternate file
 :bd         " delete from the buffer list
 :bw         " completely removes the buffer from memory
+```
 
 ## Tabs
 
