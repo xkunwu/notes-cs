@@ -1,3 +1,5 @@
+---
+---
 ### bash variable manipulation
 ```
 Delete the shortest match of string in $var from the beginning:
@@ -11,6 +13,11 @@ ${var%%string}
 example:
 ${PWD##*/}
 ${var*.zip}
+```
+
+### add file header to each of the files
+```
+find . -type f -name "*.md" -exec sed -i '1s/^/---\n---\n/' {} \;
 ```
 
 ### This prints the file count per directory for the current directory level:

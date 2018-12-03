@@ -1,3 +1,5 @@
+---
+---
 ==== 常用screen参数： ====
 
 screen -S yourname → 新建一个叫yourname的session
