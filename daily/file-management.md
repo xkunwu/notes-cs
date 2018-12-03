@@ -1,3 +1,18 @@
+### bash variable manipulation
+```
+Delete the shortest match of string in $var from the beginning:
+${var#string}
+Delete the longest match of string in $var from the beginning:
+${var##string}
+Delete the shortest match of string in $var from the end:
+${var%string}
+Delete the longest match of string in $var from the end:
+${var%%string}
+example:
+${PWD##*/}
+${var*.zip}
+```
+
 ### This prints the file count per directory for the current directory level:
 ```
 find . -maxdepth 1 -type d -print0 | while read -d '' -r dir; do num=$(find "$dir" -ls | wc -l); printf "%5d files in directory %s\n" "$num" "$dir"; done | sort -rn -k1
