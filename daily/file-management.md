@@ -1,6 +1,6 @@
 ---
 ---
-### bash variable manipulation
+### Bash variable manipulation
 ```
 Delete the shortest match of string in $var from the beginning:
 ${var#string}
@@ -15,7 +15,7 @@ ${PWD##*/}
 ${var*.zip}
 ```
 
-### add file header to each of the files
+### Add file header to each of the files
 ```
 find . -type f -name "*.md" -exec sed -i '1s/^/---\n---\n/' {} \;
 ```
@@ -24,17 +24,17 @@ find . -type f -name "*.md" -exec sed -i '1s/^/---\n---\n/' {} \;
 ```
 find . -maxdepth 1 -type d -print0 | while read -d '' -r dir; do num=$(find "$dir" -ls | wc -l); printf "%5d files in directory %s\n" "$num" "$dir"; done | sort -rn -k1
 ```
-or just simply output file count:
+Or just simply output file count:
 ```
 find . -type f | wc -l
 ```
 
-### disk usage summary
+### Disk usage summary
 ```
 du -smhc *
 ```
 
-### find disk & mount
+### Find disk & mount
 ```
 lsblk
 sudo mount disk_loc mount_loc
@@ -46,7 +46,7 @@ sudo mount disk_loc mount_loc
 ls -U | more
 ```
 
-### count all the lines of code in a directory recursively
+### Count all the lines of code in a directory recursively
 ```
 find . \( -name '*.py' -o -name '*.h' -o -name '*.cpp' \) | xargs wc -l
 ```
@@ -75,7 +75,7 @@ ldconfig -p | grep libname
 ----
 
 ### To recursively give proper privileges:
-Note: '+' means arguments to a single command
+Note: '+' means arguments to a single command, in contrast to ';' which means run command separately.
 ```
 find . -type d -exec chmod 755 {} \+
 find . -type f -exec chmod 644 {} \+

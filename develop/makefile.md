@@ -1,7 +1,9 @@
 ---
 ---
-### Tips for writing shell scripts within makefiles
+### Things I always forgot
+-   Use double dollar sign '$$' to reference Bash environment variable/evaluation.
 
+### Tips for writing shell scripts within makefiles
 -   Escape the script's use of $ by replacing with $$
 -   Convert the script to work as a single line by inserting ; between commands
 -   If you want to write the script on multiple lines, escape end-of-line with \

@@ -28,29 +28,33 @@ git pull --allow-unrelated-histories
 git push
 ```
 
-### recover the file permissions
+### Recover the file permissions
+```
 git diff -p -R --no-color \
     | grep -E "^(diff|(old|new) mode)" --color=never  \
     | git apply
 
 git config --global --add alias.permission-reset '!git diff -p -R --no-color | grep -E "^(diff|(old|new) mode)" --color=never | git apply'
 git permission-reset
-
-### compare HEAD with the previous commit
 ```
-note: @ is a alias for HEAD
-note: ~ and ^ are the same when only going one commit back
-note: comparison to HEAD is default
-note: Two dots is the default in git diff
-note: Diff with three dots shows the differences starting at the last *common* commit
+
+### Compare HEAD with the previous commit
+```
+# note: @ is a alias for HEAD
+# note: ~ and ^ are the same when only going one commit back
+# note: comparison to HEAD is default
+# note: Two dots is the default in git diff
+# note: Diff with three dots shows the differences starting at the last *common* commit
 git diff HEAD^ HEAD
 git diff @~1..@
 git show
 git diff commit_id
 ```
 
-### discard unstaged changes
+### Discard unstaged changes
+```
 git checkout -- .
+```
 
 ### Ignore file mode change (especially in Windows)
 Checkout as-is, commit Unix-style
@@ -60,7 +64,7 @@ git config --global core.fileMode false
 git config --global core.autocrlf input
 ```
 
-### patching
+### Patching
 If you haven't yet committed the changes, then:
 ```
 git diff > mypatch.patch
@@ -78,7 +82,7 @@ You can later apply the patch:
 git apply mypatch.patch
 ```
 
-### update a GitHub forked repository
+### Update a GitHub forked repository
 Note that 'fetch' means without 'merge' (as in 'pull').
 ```
 git remote add upstream remote_git
@@ -106,8 +110,10 @@ git config --local core.fileMode false
 git config --global core.fileMode false
 ```
 
-### submodule
+### Submodule
+```
 git submodule update --recursive
+```
 
 ### stage, add, stash
 -   “git stage” is an alias for “git add”: it is the step before making a commit.

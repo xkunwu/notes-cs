@@ -1,18 +1,18 @@
 ---
 ---
 {% raw %}
-### change owner recursively
+### Change owner recursively
 ```
 id
 chown -R 1000:1000 some_path
 ```
 
-### copy file from the container
+### Copy file from the container
 ```
 docker cp CONTAINER:SRC_PATH DEST_PATH
 ```
 
-### quick cleanups
+### Quick cleanups
 - Kill all containers that are currently running:
 ```
 docker kill $(docker ps -q)
@@ -25,24 +25,28 @@ docker rm $(docker ps -a -q)
 ```
 docker rmi $(docker images -f "dangling=true" -q)
 ```
+- Better way of cleaning images (require API 1.25):
+```
+docker image prune --force
+```
 
-## commit with changes
+## Commit with changes
 ```
 docker commit --change "ENV PATH=/opt/conda/bin:$PATH" 73a12e028083 tensorflow-1.12
 ```
 
-### sent to background, then reattach
+### Sent to background, then reattach
 ```
 C+p C+q
 docker attach container
 ```
 
-### running container can be connected from another shell - a very good way of checking problem, e.g., using 'ps aux'
+### Running container can be connected from another shell - a very good way of checking problem, e.g., using 'ps aux'
 ```
 docker exec -ti container bash
 ```
 
-## restart an existing container after it exited (changes are still there)
+## Restart an existing container after it exited (changes are still there)
 ```
 docker start  `docker ps -q -l` # restart it in the background
 docker attach `docker ps -q -l` # reattach the terminal & stdin

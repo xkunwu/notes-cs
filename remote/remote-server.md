@@ -1,6 +1,6 @@
 ---
 ---
-### feed password (INSECURE!)
+### Feed password (INSECURE! Use ssh authentication instead.)
 ```
 sudo apt-get install sshpass
 export SSHPASS='my_pass_here'
@@ -8,13 +8,11 @@ sshpass -e ssh server command
 ```
 
 ### X-server authority problem
-```
--   check the ownership of .Xauthority and remove .Xauthority-*
--   or use of xauth -b to break any lock files that may be hanging around
-```
+-   check the ownership of '.Xauthority' and remove '.Xauthority-\*'
+-   or use of 'xauth -b' to break any lock files that may be hanging around
 
 
-### start Cygwin/X
+### Start Cygwin/X
 ```
 XWin :0 -multiwindow -clipboard -silent-dup-error
 DISPLAY=:0.0 ssh -X palau
@@ -22,26 +20,26 @@ DISPLAY=:0.0 ssh -f -X palau xterm
 ```
 
 ### x11vnc
+```
 sudo apt install xfce4 xfce4-goodies tightvncserver
 sudo apt install tightvnc-java
 
 ssh -N -f -L 5901:localhost:5901 palau
 vncviewer localhost:1
 vncviewer palau:1
+```
 
 ### To display open ports and established TCP connections:
 ```
 netstat -vatn
 ```
 
-### change line ending recursively
-
+### Change line ending recursively
 ```
 find . -type f -print0 | xargs -0 dos2unix
 ```
 
 ### Mount remote file system over ssh:
-
 ```
 sshfs user@domain:/remote/directory/ /local/directory/
 fusermount -u /local/directory/
@@ -105,37 +103,51 @@ wget -r --no-parent --no-host-directories
 
 ### Public Key Authentication
 -   Create files and set the permissions correctly (*both* side):
-mkdir ~/.ssh/
-chmod 0700 ~/.ssh/
+    ```
+    mkdir ~/.ssh/
+    chmod 0700 ~/.ssh/
+    ```
 
 -   Create a key pair (*client* side).
-ssh-keygen -t ed25519 -f ~/.ssh/palau_key
+    ```
+    ssh-keygen -t ed25519 -f ~/.ssh/palau_key
+    ```
 
 -   Transfer *only* the public key to remote machine.
-scp ~/.ssh/palau_key.pub palau:.ssh/
+    ```
+    scp ~/.ssh/palau_key.pub palau:.ssh/
+    ```
 
 -   Add the new public key to the authorized_keys file (*server* side)
-touch ~/.ssh/authorized_keys
-chmod 0600 ~/.ssh/authorized_keys
-cat ~/.ssh/palau_key.pub >> ~/.ssh/authorized_keys
+    ```
+    touch ~/.ssh/authorized_keys
+    chmod 0600 ~/.ssh/authorized_keys
+    cat ~/.ssh/palau_key.pub >> ~/.ssh/authorized_keys
+    ```
 
 -   Test the keys
-ssh -i ~/.ssh/palau_key palau
+    ```
+    ssh -i ~/.ssh/palau_key palau
+    ```
 
 -   Associating Keys Permanently with a Server ()
-# ~/.ssh/config
-Host palau
-	IdentityFile ${HOME}/.ssh/palau_key
+    ```
+    # ~/.ssh/config
+    Host palau
+    	IdentityFile ${HOME}/.ssh/palau_key
 
--   Add Identity until next restart
-ssh-add ~/.ssh/keyfile
-ssh-add -l
+    -   Add Identity until next restart
+    ssh-add ~/.ssh/keyfile
+    ssh-add -l
+    ```
 
 ### Server setup to show info at login
+```
 landscape-common
-
+```
 
 ---
+
 ### What is the difference between .bash_profile and .bashrc?
 .bash_profile is executed for login shells, while .bashrc is executed for interactive non-login shells.
 

@@ -1,5 +1,7 @@
 ---
 ---
+### Basic manual
+```
 rsync -auvh -e ssh source target
     -a: equals -rlptgoD (no -H,-A,-X); archive mode
         -l: copy symlinks as symlinks
@@ -15,12 +17,19 @@ rsync -auvh -e ssh source target
     -v: verbose
     -h: human readable
     -e ssh: execute ssh
+```
 
 if not sure, use:
+```
     -n: dry-run without actual sync
+```
 
 especially, test it before using any delete option:
+```
     --delete: delete extraneous files from dest dirs
+```
 
 scp is also ok, but remember to add:
+```
     -p: preserve timestamp
+```

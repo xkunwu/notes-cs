@@ -1,8 +1,11 @@
 ---
 ---
 ## the .bash_history of meeting on 12.10.2018
+```
 lsb_release -a
+```
 ### require GPU
+```
 sinteractive --constraint=p100
 module load cuda/toolkit/9.2.148
 nvcc -V
@@ -10,11 +13,15 @@ nvidia-smi
 sinfo --partition=batch-acc --format="%10P %.5D %.4c %.7m %7G %8f %N"
 sinfo -p itd
 sinfo-gres
+```
 ### check jobs: use --test-only
+```
 squeue --state=PENDING | more
 man sbatch
 squeue --state=RUNNING
+```
 ### patch python
+```
 which python
 cd ~/miniconda3/bin/
 ll python
@@ -26,7 +33,9 @@ patchelf --print-interpreter ~/bin/python
 patchelf --force-rpath --set-rpath \$ORIGIN/../lib:/apps/gnu/glibc/2.23/lib ~/bin/python
 patchelf --print-rpath ~/bin/python
 python
+```
 ### add privatemodules
+```
 cat ~/.bashrc
 module avail tensorflow
 module show tensorflow/1.8.0
@@ -55,3 +64,4 @@ ls
 rm 3.6
 module list
 bash -l
+```

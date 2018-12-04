@@ -1,11 +1,11 @@
 ---
 ---
 ### cmake template
-```
-note: *DO NOT* include source header list! --> cause strange std macro not defined errors.
-note: After using swig_add_library(Foo ...), a CMake target called _Foo gets created.
-note: source list needs to be compiled into obj!
+-   note: *DO NOT* include source header list! --> cause strange std macro not defined errors.
+-   note: After using swig_add_library(Foo ...), a CMake target called '\_Foo' gets created.
+-   note: source list needs to be compiled into obj!
 
+```cmake
 cmake_minimum_required (VERSION 3.8)
 PROJECT (example)
 
