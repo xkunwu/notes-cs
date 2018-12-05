@@ -111,6 +111,11 @@ git config --global core.fileMode false
 ```
 
 ### Submodule
+Add submodule (new version of git will init automatically:
+```
+git submodule add https://github.com/xkunwu/notes-cs.git notes/notes-cs
+```
+Update:
 ```
 git submodule update --recursive
 ```
