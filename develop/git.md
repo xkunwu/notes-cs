@@ -113,11 +113,14 @@ git config --global core.fileMode false
 ### Submodule
 Add submodule (new version of git will init automatically:
 ```
-git submodule add https://github.com/xkunwu/notes-cs.git notes/notes-cs
+git submodule add -b master https://github.com/xkunwu/notes-cs.git notes/notes-cs
+git submodule update --remote
 ```
 Update:
 ```
-git submodule update --recursive
+git submodule update
+git submodule foreach git checkout master
+git submodule foreach git pull origin master
 ```
 
 ### stage, add, stash
