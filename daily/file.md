@@ -30,50 +30,20 @@ Or just simply output file count:
 find . -type f | wc -l
 ```
 
-### Disk usage summary
-```
-du -smhc *
-```
-
-### Find disk & mount
-```
-lsblk
-sudo mount disk_loc mount_loc
-```
-
-
-### ls directory with large list of file
-```
-ls -U | more
-```
-
 ### Count all the lines of code in a directory recursively
 ```
 find . \( -name '*.py' -o -name '*.h' -o -name '*.cpp' \) | xargs wc -l
 ```
 
-
 ### Copy & Paste
 ```
 # cp - force overwrite without confirmation prompt:
 yes | cp -rf
-
 # cp - skip existing files
 cp -n
-
 # recursively move a tree:
 cp -al source/* dest/ && rm -r source/*
 ```
-
-----
-
-### To get the details of linked libraries:
-
-```
-ldconfig -p | grep libname
-```
-
-----
 
 ### To recursively give proper privileges:
 Note: '+' means arguments to a single command, in contrast to ';' which means run command separately.
@@ -84,7 +54,6 @@ find . -type f -name "*.sh" -exec chmod +x {} \+
 ```
 
 ### Recursively rename file extension:
-
 ```
 find . -name '*.PNG' -exec rename -v 's/\.PNG$/\.png/i' {} \;
 ```
