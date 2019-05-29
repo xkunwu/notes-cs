@@ -14,7 +14,7 @@ ffmpeg -i input.mp4 -vcodec libx264 -crf 24 -an -filter:v "scale='min(640,iw)':m
 
 ### Convert to gif
 ```
-ffmpeg -i CenterPiece.mp4  -r 10 CenterPiece.gif
+ffmpeg -i output.24.mp4 -r 10 output.gif
 convert -loop 0 frames/*.png output.gif
 # default delay is 5x100, so the following will make it quicker:
 convert -loop 0 -delay 1x30 -dispose Background anim_00*.png blob_fish.gif

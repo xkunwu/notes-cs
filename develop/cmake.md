@@ -38,3 +38,8 @@
 cmake -L -N
 cmake -LAH -N
 ```
+
+### Static library (.a)
+Static libraries do not link with other static libraries: A static library is just an archive of .o object files.
+-   Unix: Extract them with ar and pack them back into one big library.
+-   Visual Studio: The library builder tool that comes with Visual Studio allows you to join libraries together on the command line.

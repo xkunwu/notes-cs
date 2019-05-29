@@ -32,7 +32,7 @@ find . -type f | wc -l
 
 ### Count all the lines of code in a directory recursively
 ```
-find . \( -name '*.py' -o -name '*.h' -o -name '*.cpp' \) | xargs wc -l
+{ echo "Line counts for project: $(pwd)" & echo "Generated at: $(date)" ; find . -type f \( -name '*.py' -o -name '*.h' -o -name '*.cpp' \) | xargs wc -l ; } | cat > line-count.txt
 ```
 
 ### Copy & Paste
@@ -58,3 +58,10 @@ find . -type f -name "*.sh" -exec chmod +x {} \+
 find . -name '*.PNG' -exec rename -v 's/\.PNG$/\.png/i' {} \;
 ```
 
+### Extracting embedded images from a PDF:
+```
+pdfimages -j in.pdf /tmp/out
+-j:  Normally, all images are written as PBM (for monochrome images) or PPM for
+     non-monochrome images) files. With this option,  images in DCT format are
+     saved as JPEG files. All non-DCT images are saved in PBM/PPM format as usual.
+```
