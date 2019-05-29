@@ -116,11 +116,14 @@ Add submodule (new version of git will init automatically:
 git submodule add -b master https://github.com/xkunwu/notes-cs.git notes/notes-cs
 git submodule update --remote
 ```
-Update:
+Update (2-way):
 ```
-git submodule update
-git submodule foreach git checkout master
-git submodule foreach git pull origin master
+git submodule update --remote --merge
+git submodule update --remote --rebase
+```
+Push:
+```
+git push --recurse-submodules=on-demand
 ```
 
 ### stage, add, stash

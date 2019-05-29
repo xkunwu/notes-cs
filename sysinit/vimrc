@@ -8,9 +8,8 @@ set showcmd showmode
 set encoding=utf-8
 set termencoding=utf-8
 set fileencodings=utf-8,gbk,gb18030,gb2312
+set noinsertmode
 
-set tabstop=4 " set tab width
-set softtabstop=4
 set textwidth=120      " set to 0 for 'wrapmargin' taking effect
 set formatoptions+=mM   " useful for Asian text
 " set wrapmargin=120 " Define right margin for line wrapping
@@ -80,11 +79,13 @@ set ruler " bottom right about current position
 "--------------------------------------------------------------------------------
 set completeopt=longest,menu " only insert longest, show menu
 set showmatch " show matched brackets
-set smartindent "
-set shiftwidth=4 "
-set expandtab " expand <tab> to spaces
-set autoindent "
-set ai! " automatically indent
+filetype plugin indent on
+set tabstop=4 " show existing tab with 4 spaces width
+set shiftwidth=4 " when indenting with '>', use 4 spaces width
+set softtabstop=4 " Sets the number of columns for a TAB
+set expandtab " On pressing tab, insert 4 spaces
+"set cindent " c-language style
+"set autoindent " automatically indent
 syntax enable
 syntax on
 
@@ -102,7 +103,8 @@ set foldlevel=100 " Don't autofold anything (but I can still fold manually)
 "--------------------------------------------------------------------------------
 " some short-cuts
 "--------------------------------------------------------------------------------
-set clipboard=unnamedplus
+"set clipboard=unnamed " update register * (selection)
+set clipboard=unnamedplus " update register + (clipboard)
 " copy
 "vnoremap <C-Insert> "+y
 vnoremap <Leader>y "+y
@@ -111,16 +113,21 @@ vnoremap <Leader>y "+y
 vnoremap <Leader>x "+y
 " paste
 set pastetoggle=<F8>
-map <S-Insert>        "+gP
-cmap <S-Insert>        <C-R>+
+map <S-Insert> "+gP
+cmap <S-Insert> <C-R>+
+vnoremap <Leader>p "0p
+nnoremap <Leader>p "0p
 " substitute
 "nnoremap <Leader>s :%s/\<<C-r><C-w>\>//c<Left><Left>
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>/<C-r><C-w>/c<Left><Left>
 "nnoremap <Leader>s :%s/\<<C-r><C-w>\>/<C-R>"/c<Left><Left>
-nnoremap <Leader>S :%s/\<<C-r><C-w>\>/<C-R>*/c
+nnoremap <Leader>S :%s/\<<C-r><C-w>\>/<C-R>"/c
 "vnoremap <Leader>S y:%s/<C-r><C-r>"//c<Left><Left>
 vnoremap <Leader>s y:%s/<C-r><C-r>"/<C-R>"/c<Left><Left>
 vnoremap <Leader>S y:%s/<C-r><C-r>"/<C-R>*/c
+" tab shift in visual mode
+vmap <Tab> >gv
+vmap <S-Tab> <gv
 
 "--------------------------------------------------------------------------------
 " QuickFix
@@ -137,6 +144,7 @@ nmap <S-F6> :tabp<cr> " show prev tab
 cmap W!! w !sudo tee > /dev/null %
 
 " open the file explorer, and hit another - to move up one directory
+autocmd FileType netrw setl bufhidden=delete " deletes netrw's buffer once it's hidden
 nmap - :Explore!<CR>
 nmap _ :Rexplore<CR>
 " let g:netrw_banner = 0 " Removing the banner
@@ -162,6 +170,9 @@ function! GotoJump()
 endfunction
 nmap <Leader>j :call GotoJump()<CR>
 nnoremap <leader>o :oldfiles<CR>
+
+" toggle highlight
+nnoremap <leader>h :noh<CR>
 
 "--------------------------------------------------------------------------------
 " Tabline

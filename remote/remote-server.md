@@ -136,9 +136,17 @@ wget -r --no-parent --no-host-directories
     Host palau
     	IdentityFile ${HOME}/.ssh/palau_key
 
-    -   Add Identity until next restart
+-   Add Identity until next restart
     ssh-add ~/.ssh/keyfile
     ssh-add -l
+    ```
+
+-   Windows: Could not open a connection to your authentication agent.
+    Error connecting to agent: Connection refused.
+    ```
+    ps aux | grep ssh
+    kill -9 ssh_id
+    eval `ssh-agent -s`
     ```
 
 ### Server setup to show info at login
