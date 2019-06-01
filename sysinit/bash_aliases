@@ -1,0 +1,18 @@
+# ls
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias cd..='cd ..'
+alias l='ls -CF'
+alias ll='ls -alFh'
+alias la='ls -AF'
+alias md='mkdir -p'
+
+# rsync
+alias rex='rsync -auvh --info=progress2 -e ssh'
+
+# git
+alias gsta="git status"
+alias gaA="git add -A"
+alias gdif="git diff"
+alias gcom="git commit"

@@ -33,6 +33,7 @@ set scrolloff=5
 "endif
 colorscheme desert
 " colorscheme morning
+set background=dark
 
 " Sets how many lines of history VIM has to remember
 set history=1000
