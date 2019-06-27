@@ -63,6 +63,14 @@ sudo vim /etc/fstab
 sshfs#xw943@linux.bath.ac.uk:/u/q/xw943/ /mnt/linbath
 ```
 
+### Automatic mount USB on a headless server
+```
+sudo apt-get install usbmount
+sudo vim /etc/usbmount/usbmount.conf
+FS_MOUNTOPTIONS="uid=1000,gid=1000"
+FS_MOUNTOPTIONS = "-fstype=vfat,gid=users,dmask=0007,fmask=0117"
+```
+
 ---
 
 ### Scp from remote server:
@@ -116,6 +124,7 @@ wget -r --no-parent --no-host-directories
 -   Transfer *only* the public key to remote machine.
     ```
     scp ~/.ssh/palau_key.pub palau:.ssh/
+    ssh-copy-id -i ~/.ssh/palau_key.pub palau
     ```
 
 -   Add the new public key to the authorized_keys file (*server* side)
