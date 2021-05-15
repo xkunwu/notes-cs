@@ -61,6 +61,9 @@ Checkout as-is, commit Unix-style
 Note: umask might be different
 ```
 git config --global core.fileMode false
+# on Windows:
+git config --global core.autocrlf true
+# on Linux or OS X:
 git config --global core.autocrlf input
 ```
 
@@ -101,13 +104,6 @@ git config user.name "xw943"
 ### Permanently authenticating with Git repositories
 ```
 git config credential.helper store
-```
-
-### Tracking of Executable Bit Change
-```
-git config --get --local core.filemode
-git config --local core.fileMode false
-git config --global core.fileMode false
 ```
 
 ### Submodule

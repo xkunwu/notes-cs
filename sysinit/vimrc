@@ -33,7 +33,6 @@ set scrolloff=5
 "endif
 colorscheme desert
 " colorscheme morning
-set background=dark
 
 " Sets how many lines of history VIM has to remember
 set history=1000
@@ -102,8 +101,17 @@ set foldlevel=100 " Don't autofold anything (but I can still fold manually)
 "set foldcolumn=4
 
 "--------------------------------------------------------------------------------
-" some short-cuts
+" clipboard
 "--------------------------------------------------------------------------------
+" WSL yank support
+let s:clip = '/mnt/c/Windows/System32/clip.exe'  " default location
+if executable(s:clip)
+    augroup WSLYank
+        autocmd!
+        autocmd TextYankPost * call system('echo '.shellescape(join(v:event.regcontents, "\<CR>")).' | '.s:clip)
+        augroup END
+end
+
 "set clipboard=unnamed " update register * (selection)
 set clipboard=unnamedplus " update register + (clipboard)
 " copy
@@ -118,6 +126,10 @@ map <S-Insert> "+gP
 cmap <S-Insert> <C-R>+
 vnoremap <Leader>p "0p
 nnoremap <Leader>p "0p
+
+"--------------------------------------------------------------------------------
+" some shortcuts
+"--------------------------------------------------------------------------------
 " substitute
 "nnoremap <Leader>s :%s/\<<C-r><C-w>\>//c<Left><Left>
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>/<C-r><C-w>/c<Left><Left>

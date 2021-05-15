@@ -20,3 +20,8 @@ ls -U | more
 ```
 DISPLAY=:0 kwin --replace
 ```
+
+### monitor GPU usage in 1s intervals and highlights differences
+```
+watch -d -n 0.5 nvidia-smi
+```
