@@ -2,27 +2,46 @@
 ---
 ### Batch reduce image size
 
-```
+```sh
 for file in *.jpg; do convert -resize 25% $file $file; done
 ```
 
-### Reduce video size
+[Efficient Image Resizing With ImageMagick](https://www.smashingmagazine.com/2015/06/efficient-image-resizing-with-imagemagick/)
+
+```sh
+mogrify -path OUTPUT_PATH \
+    -thumbnail OUTPUT_WIDTH \
+    -filter Triangle -define filter:support=2 -define jpeg:fancy-upsampling=off \
+    -unsharp 0.25x0.25+8+0.065 \
+    -posterize 136 -dither None \
+    -colorspace sRGB \
+    -quality 82 -define png:compression-filter=5 -define png:compression-level=9 -define png:compression-strategy=1 \
+    -strip -define png:exclude-chunk=all \
+    -interlace none \
+    INPUT_NAME
+
+mogrify -filter Triangle -define filter:support=2 -define jpeg:fancy-upsampling=off -unsharp 0.25x0.25+8+0.065 -posterize 136 -dither None -colorspace sRGB -quality 82 -define png:compression-filter=5 -define png:compression-level=9 -define png:compression-strategy=1 -strip -define png:exclude-chunk=all -thumbnail "1600x1000>" -interlace none -path OUTPUT_PATH INPUT_NAME
 ```
+
+### Reduce video size
+
+```sh
 # scale down to 640x480 (no upscaling), padding if necessary, remove audio
 ffmpeg -i input.mp4 -vcodec libx264 -crf 24 -an -filter:v "scale='min(640,iw)':min'(480,ih)':force_original_aspect_ratio=decrease,pad=640:480:(ow-iw)/2:(oh-ih)/2" output.24.mp4
 ```
 
 ### Convert to gif
-```
+
+```sh
 ffmpeg -i output.24.mp4 -r 10 output.gif
 convert -loop 0 frames/*.png output.gif
 # default delay is 5x100, so the following will make it quicker:
 convert -loop 0 -delay 1x30 -dispose Background anim_00*.png blob_fish.gif
 ```
 
-### Compress PDF:
+### Compress PDF
 
-```
+```batch
 :: -dPDFSETTINGS=/screen   (screen-view-only quality, 72 dpi images)
 :: -dPDFSETTINGS=/ebook    (low quality, 150 dpi images)
 :: -dPDFSETTINGS=/printer  (high quality, 300 dpi images)
