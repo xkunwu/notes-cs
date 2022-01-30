@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+### test -f ~/.bash_prompt && . ~/.bash_prompt
+
+# GIT FUNCTIONS
+git_branch() {
+    git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+# TERMINAL PROMPT
+PS1="\[\e[0;92m\]\u\[\e[m\]"    # username
+PS1+="@"    # space
+PS1+="\[\e[0;92m\]\h\[\e[m\]"    # hostname
+PS1+=":"    # space
+PS1+="\[\e[0;94m\]\W\[\e[m\]"    # current directory
+PS1+="\[\e[0;93m\]\$(git_branch)\[\e[m\]"    # current branch
+PS1+=" "    # space
+PS1+="> "    # end prompt
+export PS1;
+
+export CLICOLOR=1
+export LSCOLORS=ExFxBxDxCxegedabagacad

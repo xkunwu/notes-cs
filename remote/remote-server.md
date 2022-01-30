@@ -196,7 +196,7 @@ landscape-common
 
 When you login (type username and password) via console, either sitting at the machine, or remotely via ssh: .bash_profile is executed to configure your shell before the initial command prompt.
 
-But, if you’ve already logged into your machine and open a new terminal window (xterm) then .bashrc is executed before the window command prompt. .bashrc is also run when you start a new bash instance by typing /bin/bash in a terminal.
+But, if you've already logged into your machine and open a new terminal window (xterm) then .bashrc is executed before the window command prompt. .bashrc is also run when you start a new bash instance by typing /bin/bash in a terminal.
 
 ### *Nomachine* black screen problem
 
@@ -206,4 +206,48 @@ NoMachine is able to detect when the X server is not running and run its own vir
 ```sh
 sudo systemctl stop display-manager
 sudo /etc/NX/nxserver --restart
+```
+
+### Laptop screen
+
+Disable hibernate when closing lid:
+
+```sh
+vim /etc/systemd/logind.conf
+####
+HandleLidSwitch=lock
+HandleLidSwitchDocked=ignore
+####
+
+systemctl restart systemd-logind.service
+```
+
+Poweroff screen via commandline (repeat every boot):
+
+```sh
+setterm --blank 1 --powerdown 30
+# check it
+cat /sys/module/kernel/parameters/consoleblank
+```
+
+Or modify GRUB:
+
+```sh
+vi /etc/default/grub
+####
+GRUB_CMDLINE_LINUX="consoleblank=60"
+####
+
+update-grub
+```
+
+### iwctl
+
+```sh
+iwctl
+
+device list
+station wlan0 scan
+station wlan0 get-networks
+station wlan0 connect SSID
 ```

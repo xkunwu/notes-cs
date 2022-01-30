@@ -1,0 +1,27 @@
+ForwardAgent yes
+
+
+Host github.com-xkunwu
+    HostName github.com
+    IdentityFile ~/.ssh/git_xkunwu
+
+
+Host 4017hp
+    # HostName 218.199.4.91
+    HostName 10.22.11.1
+    User xwu
+    Port 22
+    ForwardX11 yes
+    ForwardX11Trusted yes
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/ssh_xwu
+
+Host lenos5
+    HostName 10.22.11.22
+    User xwu
+    Port 22
+    ForwardX11 yes
+    ForwardX11Trusted yes
+    AddKeysToAgent yes
+    IdentityFile ~/.ssh/ssh_xwu
+

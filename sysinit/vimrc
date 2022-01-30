@@ -113,7 +113,8 @@ if executable(s:clip)
 end
 
 "set clipboard=unnamed " update register * (selection)
-set clipboard=unnamedplus " update register + (clipboard)
+"set clipboard=unnamedplus " update register + (clipboard)
+set clipboard=unnamedplus,unnamed,autoselect
 " copy
 "vnoremap <C-Insert> "+y
 vnoremap <Leader>y "+y

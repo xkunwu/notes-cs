@@ -1,3 +1,5 @@
+### test -f ~/.bash_aliases && . ~/.bash_aliases
+
 # ls
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -15,4 +17,7 @@ alias rex='rsync -auvh --info=progress2 -e ssh'
 alias gsta="git status"
 alias gaA="git add -A"
 alias gdif="git diff"
-alias gcom="git commit"
+alias gcam="git commit -am"
+
+# DL
+alias jlab='jupyter lab --no-browser'
