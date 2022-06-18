@@ -76,7 +76,6 @@ You can do this by switching to the appropriate window, typing your Tmux prefix 
 
 You can optionally add on or off to specify which state you want; otherwise the option is simply toggled. This option is specific to one window, so it won’t change the way your other sessions or windows operate. When you’re done, toggle it off again by repeating the command. [tip source](http://blog.sanctum.geek.nz/sync-tmux-panes/)
 
-
 ## Resizing Panes
 
 You can also resize panes if you don’t like the layout defaults. I personally rarely need to do this, though it’s handy to know how. Here is the basic syntax to resize panes:
@@ -91,7 +90,6 @@ You can also resize panes if you don’t like the layout defaults. I personally 
     PREFIX : resize-pane -R 20 (Resizes the current pane right by 20 cells)
     PREFIX : resize-pane -t 2 20 (Resizes the pane with the id of 2 down by 20 cells)
     PREFIX : resize-pane -t -L 20 (Resizes the pane with the id of 2 left by 20 cells)
-
 
 ## Copy mode:
 
@@ -166,3 +164,11 @@ For example, we can use "w" to jump to the next word and "b" to jump back one wo
     unbind Up bind Up new-window -d -n tmp \; swap-pane -s tmp.1 \; select-window -t tmp
     unbind Down
     bind Down last-window \; swap-pane -s tmp.1 \; kill-window -t tmp
+
+## Write all tmux scrollback to a file
+
+```sh
+tmux capture-pane -pS -9999 > file.out
+```
+
+Within tmux: `prefix` + `:`

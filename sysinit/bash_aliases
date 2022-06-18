@@ -1,10 +1,9 @@
 ### test -f ~/.bash_aliases && . ~/.bash_aliases
 
 # ls
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
 alias cd..='cd ..'
+alias cd...='cd ../..'
+alias cd....='cd ../../..'
 alias l='ls -CF'
 alias ll='ls -alFh'
 alias la='ls -AF'

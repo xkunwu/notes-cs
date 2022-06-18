@@ -8,7 +8,7 @@
 # crontab -e
 # # auto campus network
 # # */5 * * * * ~/bin/campus_network.sh >/dev/null 2>&1
-# */5 8-23 * * * ~/bin/campus_network.sh >/dev/null 2>&1
+# */5 5-23 * * * ~/bin/campus_network.sh >/dev/null 2>&1
 # # auto clean log
 # 0 0 1 * * date > /var/log/campus_network.log >/dev/null 2>&1
 

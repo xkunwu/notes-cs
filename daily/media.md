@@ -39,6 +39,13 @@ convert -loop 0 frames/*.png output.gif
 convert -loop 0 -delay 1x30 -dispose Background anim_00*.png blob_fish.gif
 ```
 
+### Crop, resize and convert to gif
+
+```sh
+magick mogrify -crop 800x800+600+0 +repage -resize 400x400^ +repage -path ./crop *.jpg
+convert -loop 0 -delay 30 ./crop/*.jpg ebike.gif
+```
+
 ### Compress PDF
 
 ```batch
@@ -53,4 +60,10 @@ gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.5 -dNOPAUSE -dQUIET -dBATCH -dPDFSET
 "C:\Program Files\gs\gs9.21\bin\gswin64c" -sDEVICE=pdfwrite -dCompatibilityLevel=1.5 -dNOPAUSE -dQUIET -dBATCH -dPDFSETTINGS=/screen -sOutputFile=output.pdf input.pdf
 
 "C:\Program Files\gs\gs9.21\bin\gswin64c" -sDEVICE=pdfwrite -dCompatibilityLevel=1.5 -dNOPAUSE -dQUIET -dDownsampleColorImages=true -dDownsampleGrayImages=true -dDownsampleMonoImages=true -dColorImageResolution=150 -dGrayImageResolution=150 -dMonoImageResolution=150 -dColorImageDownsampleThreshold=1.0 -dGrayImageDownsampleThreshold=1.0 -dMonoImageDownsampleThreshold=1.0 -o output-150.pdf input.pdf
+```
+
+### slicing up a large image into tiles
+
+```sh
+vips dzsave qianli.tif qianli --depth one --tile-size 1024 --overlap 128 --suffix .tif
 ```
