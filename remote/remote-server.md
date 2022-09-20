@@ -150,6 +150,8 @@ wget -r --no-parent --no-host-directories
     touch ~/.ssh/authorized_keys
     chmod 0600 ~/.ssh/authorized_keys
     cat ~/.ssh/palau_key.pub >> ~/.ssh/authorized_keys
+    
+    ssh target 'mkdir -p .ssh && cat >> .ssh/authorized_keys' < ~/.ssh/id_rsa.pub
     ```
 
 - Test the keys

@@ -30,3 +30,11 @@ DISPLAY=:0 kwin --replace
 ```sh
 watch -d -n 0.5 nvidia-smi
 ```
+
+### 禁止设备唤醒电脑
+
+打开带有管理员权限的 `powershell` 窗口：`Win + x, a`
+
+- 哪些设备可以唤醒电脑：`powercfg /devicequery wake_armed`
+- 禁止该设备唤醒电脑：`powercfg /devicedisablewake "设备名"`
+- 禁用掉所有的设备唤醒：`powercfg /devicequery wake_armed | ForEach{ powercfg /devicedisablewake $_ }`
