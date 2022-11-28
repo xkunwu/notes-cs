@@ -38,16 +38,21 @@ service ssh status
 
 #### Forward port
 
-```sh
-netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=8231 connectaddress=172.31.0.1 connectport=22
+```powershell
+wsl --list
+wsl hostname -I
+netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=8231 connectaddress=(wsl hostname -I).trim() connectport=22
+
+netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=8231 connectaddress=172.26.12.41 connectport=22
 netsh interface portproxy show v4tov4
-netsh int portproxy reset all
+netsh interface portproxy reset all
 ```
 
 #### Open firewall port
 
-```sh
+```powershell
 netsh advfirewall firewall add rule name="Open Port 8231 for WSL2" dir=in action=allow protocol=TCP localport=8231
+netsh advfirewall firewall show rule name=all | find "Open Port 8231"
 ```
 
 #### WSL config script
@@ -66,7 +71,7 @@ visudo
 xwu  ALL=(ALL:ALL) NOPASSWD: ALL
 ```
 
-```ps
+```powershell
 $trigger = New-JobTrigger -AtStartup -RandomDelay 00:00:15
 Register-ScheduledJob -Trigger $trigger -FilePath C:\bin\ssh_to_wsl.ps1 -Name RouteSSHtoWSL
 ```
