@@ -43,7 +43,6 @@ wsl --list
 wsl hostname -I
 netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=8231 connectaddress=(wsl hostname -I).trim() connectport=22
 
-netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=8231 connectaddress=172.26.12.41 connectport=22
 netsh interface portproxy show v4tov4
 netsh interface portproxy reset all
 ```
@@ -58,22 +57,24 @@ netsh advfirewall firewall show rule name=all | find "Open Port 8231"
 #### WSL config script
 
 ```ps1
-wsl.exe sudo /etc/init.d/ssh start
-$wsl_ip = (wsl -d "Ubuntu" hostname -I).trim()
-Write-Host "WSL Machine IP: ""$wsl_ip"""
-netsh interface portproxy add v4tov4 listenport=8231 connectport=22 connectaddress=$wsl_ip
+netsh interface portproxy reset all
+netsh interface portproxy add v4tov4 listenaddress=0.0.0.0 listenport=8231 connectaddress=(wsl hostname -I).trim() connectport=22
 ```
 
-```sh
-visudo
+##### execution of scripts is disabled on this system
 
-%sudo ALL=(ALL:ALL) NOPASSWD: /etc/init.d/ssh
-xwu  ALL=(ALL:ALL) NOPASSWD: ALL
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
+Set-ExecutionPolicy -ExecutionPolicy Restricted
 ```
 
 ```powershell
 $trigger = New-JobTrigger -AtStartup -RandomDelay 00:00:15
 Register-ScheduledJob -Trigger $trigger -FilePath C:\bin\ssh_to_wsl.ps1 -Name RouteSSHtoWSL
+
+Register-ScheduledJob -Trigger (New-JobTrigger -AtStartup -RandomDelay 00:00:15) -FilePath C:\bin\ssh_to_wsl.ps1 -Name RouteSSHtoWSL
+
+Get-ScheduledJob
 ```
 
 #### auto-start the SSH server
