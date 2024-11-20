@@ -56,7 +56,7 @@
 - 安全机制：防止“跑飞”，例如设置的ARR数值低于CNT，则只能等到CNT累加至最大值65535
 - 强制使能：PSC、RCR；默认关闭、可手动开关：ARR
 
-### 实验：延迟函数
+#### 实验：延迟函数
 
 1. SYS/Debug: Serial Wire
 2. PC13: GPIO_Output
@@ -67,8 +67,8 @@
    1. Mode/Clock Source: Internal Clock
    2. Parameter Settings
       1. Counter Settings
-         1. Prescaler (PSC): 7
-         2. Counter Period (AutoReload Register): 999
+         1. Prescaler (PSC): 8-1
+         2. Counter Period (AutoReload Register): 1000-1
          3. Repetition Counter (RCR): 0
          4. auto-reload preload: Enable
    3. NVIC Settings
@@ -130,13 +130,13 @@ CCR (Capture/Compare Register)：捕获/比较寄存器
 #### 模式
 
 - Frozen 冻结：保持不变
-- Active On Match 相等有效：CNT=CCR时输出高电压
-- Inactive On Match 相等无效：CNT=CCR时输出低电压
-- Toggle 翻转：CNT=CCR时输出电压翻转一次
-- Force Inactive 强制无效：强制输出低电压
-- Force Active 强制有效：强制输出高电压
-- PWM1：CNT>CCR时输出低电压
-- PWM2：CNT>CCR时输出高电压
+- Active On Match 相等有效：CNT = CCR时输出有效电平
+- Inactive On Match 相等无效：CNT = CCR时输出无效电平
+- Toggle 翻转：CNT = CCR时输出电压翻转一次
+- Force Inactive 强制无效：强制输出无效电平
+- Force Active 强制有效：强制输出有效电平
+- PWM1：CNT < CCR时输出有效电平
+- PWM2：CNT < CCR时输出无效电平
 
 #### 极性选择
 
@@ -157,8 +157,8 @@ CCR (Capture/Compare Register)：捕获/比较寄存器
       2. Channel1: PWM Generation CH1 CH1N
    2. Parameter Settings
       1. Counter Settings
-         1. Prescaler (PSC): 7
-         2. Counter Period (AutoReload Register): 999
+         1. Prescaler (PSC): 8-1
+         2. Counter Period (AutoReload Register): 1000-1
          3. Repetition Counter (RCR): 0
          4. auto-reload preload: Enable
       2. PWM Generation Channel 1
@@ -212,21 +212,22 @@ while (1)
    1. GPIO mode: Output Open Drain
    2. GPIO output level: High
    3. Maximum output speed: Low
-3. PA9: GPIO_Output
+3. PA11: GPIO_Output
    1. GPIO mode: Output Push Pull
    2. GPIO output level: low
    3. Maximum output speed: Low
-4. TIM1
+4. RCC
+   1. Mode/High Speed Clock (HSE): Crystal/Ceramic Resonator
+      1. Clock Configuration/HCLK: 72
+5. TIM1
    1. Mode
       1. Clock Source: Internal Clock
       2. Channel1: Input Capture direct mode
       3. Channel2: Input Capture indirect mode
    2. Parameter Settings
       1. Counter Settings
-         1. Prescaler (PSC): 7
-         2. Counter Period (AutoReload Register): 65535
-         3. Repetition Counter (RCR): 0
-         4. auto-reload preload: Enable
+         1. Prescaler (PSC): 72-1
+         2. auto-reload preload: Enable
       2. Input Capture Channel 1
          1. Polarity Selection: Rising Edge
          2. IC Selection: Direct
@@ -235,6 +236,8 @@ while (1)
          1. Polarity Selection: Falling Edge
          2. IC Selection: Indirect
          3. Prescaler Division Ratio: No division
+   3. NVIC Settings
+      1. TIM1 capture compare interrupt: Enabled
 
 ```c
 // 1. Clear CNT
@@ -245,13 +248,14 @@ __HAL_TIM_CLEAR_FLAG(&htim1, TIM_FLAG_CC1);
 __HAL_TIM_CLEAR_FLAG(&htim1, TIM_FLAG_CC2);
 
 // 3. Start Input Capture
+// HAL_TIM_Base_Start(&htim1);
 HAL_TIM_IC_Start(&htim1, TIM_CHANNEL_1);
 HAL_TIM_IC_Start(&htim1, TIM_CHANNEL_2);
 
 // 4. Send pulse to TRIG
-HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_SET);
+HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_SET);
 for (uint32_t ii=0; ii < 10; ++ii); // 10us (for loop takes 8 cycles)
-HAL_GPIO_WritePin(GPIOA, GPIO_PIN_9, GPIO_PIN_RESET);
+HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_RESET);
 
 // 5. Wait for sensing
 uint8_t success = 0;
@@ -279,27 +283,67 @@ if (.2f > distance) HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
 else HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
 ```
 
+```c
+static uint32_t edgeRise = 0;
+static uint32_t edgeFall = 0;
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
+{
+    if (htim != &htim1) return;
+    if (htim->Channel != HAL_TIM_ACTIVE_CHANNEL_2) return;
+    edgeRise = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);
+    edgeFall = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_2);
+}
+
+HAL_TIM_IC_Start(&htim1, TIM_CHANNEL_1);
+HAL_TIM_IC_Start_IT(&htim1, TIM_CHANNEL_2); // generate interrupt only on falling edge
+
+while (1) {
+   __HAL_TIM_SET_COUNTER(&htim1, 0);
+   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_SET);
+   for (uint32_t ii=0; ii < 10; ++ii); // 10us (for loop takes 8 cycles)
+   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_11, GPIO_PIN_RESET);
+   HAL_Delay(20);
+
+   float pulseWidth = (edgeFall - edgeRise) * 1e-6f;
+   float distance = 340.f * pulseWidth / 2.f;
+   if (.2f > distance) HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_RESET);
+   else HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+   HAL_Delay(500);
+}
+```
+
 ### 从模式控制器
 
 可以同时用作主机、从机，互不冲突
 
-- 作为从机被控制
-  - TRGI (Trigger Input)：触发输入，获取控制信号
+#### 作为从机被控制
+
+- TRGI (Trigger Input)：触发输入，获取控制信号
+  - 外部时钟模式1：经过触发器，传入定时器内部的触发控制器（经由从模式控制器处理）
     - TIxFPy Timer Input x Filtered Polarized y：来自x定时器输入，经过滤波、极性选择后，由y通道输出
-  - 控制当前定时器：启、停、复位、增、减
-    - Slave Mode disable 从模式禁止：不使用从机功能
-    - Encoder Mode [1-3] 编码器模式[1-3]
-    - Reset Mode 复位模式：TRGI的上升沿复位（清零）CNT，同时产生Update事件
-    - Gated Mode 门模式：TRGI控制时基单元的开关，即CNT的计数开关，高（电压导）通、低（电压）断（开）
-    - Trigger Mode 触发模式：TRGI的上升沿启动定时器，使得CNT开始计数
-    - External Clock Mode 1 外部时钟模式1：TRGI作为定时器的时钟，让CNT计数频率与其脉冲周期一致
-- 作为主机控制其他模块：定时器、ADC、DAC等
-  - TRGO (Trigger Output)：触发输出，输出TRGI的控制信号
-    - Reset 复位
-    - Enable 使能：TRGO输出时基单元的开关状态，通-高、断-低
-    - Update 更新：每产生一个Update事件（CNT溢出），就向TRGO输出一个脉冲
-    - Compare Pulse 输出比较脉冲
-    - Compare OC[1-4]Ref 输出比较参考信号[1-4]
+    - TI1_ED：只能双边沿检测（无极性选择）
+    - ETR (External Trigger)：外部触发器
+  - 外部时钟模式2：没有经过触发器，直接传入定时器内部的触发控制器（不经过从模式控制器处理）
+    - ETR (External Trigger)：外部触发器
+      - External trigger filter 外部触发滤波：数字滤波器是事件计数器，记录到N个事件后产生一个输出跳变
+- 控制当前定时器：启、停、复位、增、减
+  - Slave Mode disable 从模式禁止：不使用从机功能
+  - Encoder Mode [1-3] 编码器模式[1-3]
+  - Reset Mode 复位模式：TRGI的上升沿复位（清零）CNT，同时产生Update事件
+  - Gated Mode 门模式：TRGI控制时基单元的开关，即CNT的计数开关，高（电压导）通、低（电压）断（开）
+  - Trigger Mode 触发模式：TRGI的上升沿启动定时器，使得CNT开始计数
+    - One Pulse Mode 单脉冲模式：只触发一次
+  - External Clock Mode 1 外部时钟模式1：TRGI作为定时器的时钟，让CNT计数频率与其脉冲周期一致
+
+#### 作为主机
+
+- TRGO (Trigger Output)：触发输出，输出TRGI的控制信号
+- 控制其他模块：定时器、ADC、DAC等
+  - Reset 复位
+  - Enable 使能：TRGO输出时基单元的开关状态，通-高、断-低
+  - Update 更新：每产生一个Update事件（CNT溢出），就向TRGO输出一个脉冲
+  - Compare Pulse 输出比较脉冲
+  - Compare OC[1-4]Ref 输出比较参考信号[1-4]
 
 #### 实验：测量占空比
 
@@ -311,8 +355,8 @@ else HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
       2. Channel1: PWM Generation CH1
    2. Parameter Settings
       1. Counter Settings
-         1. Prescaler (PSC): 7
-         2. Counter Period (AutoReload Register): 999
+         1. Prescaler (PSC): 8-1
+         2. Counter Period (AutoReload Register): 1000-1
          3. auto-reload preload: Enable
       2. PWM Generation Channel 1
          1. Mode: PWM mode 1
@@ -395,6 +439,51 @@ while (1)
 }
 ```
 
+#### 实验：红外线循迹模块计数器/红外线对射计数器
+
+1. SYS/Debug: Serial Wire
+2. I2C2/Mode: I2C
+   1. Parameter Settings/Master features
+      1. I2C Speed Mode: Fast Mode
+3. TIM2
+   1. Mode/Clock Source: ETR2
+   2. Parameter Settings
+      1. Counter Settings
+         1. Counter Period (AutoReload Register): 10
+      2. Clock/Clock Filter: 15
+   3. NVIC Settings/TIM2 global interrupt: Enabled
+
+```c
+static uint32_t loop = 0;
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim != htim2) return;
+  ++loop;
+}
+
+int main(void)
+{
+  HAL_Delay(20);
+  OLED_Init();
+  HAL_TIM_Base_Start_IT(&htim2);
+  const uint32_t period = htim2.Init.Period;
+  uint32_t counter = 0;
+  char message[32] = "";
+  loop = 0;
+  while (1)
+  {
+//    counter = __HAL_TIM_GET_COUNTER(&htim2);
+    counter = loop * period + __HAL_TIM_GET_COUNTER(&htim2);
+    sprintf(message, "counter: %lu", counter);
+    OLED_NewFrame();
+    OLED_PrintString(0, 20, message, &font15x15, OLED_COLOR_NORMAL);
+    OLED_ShowFrame();
+    HAL_Delay(100);
+  }
+}
+```
+
 ### 编码器
 
 编码器相当于电机：测量角度、转速
@@ -415,20 +504,37 @@ while (1)
 
 1. SYS/Debug: Serial Wire
 2. USART1/Mode: Asynchronous
-3. TIM3
+3. RCC
+   1. Mode/High Speed Clock (HSE): Crystal/Ceramic Resonator
+      1. Clock Configuration/HCLK: 72
+4. TIM1
    1. Mode
       1. Combined Channels: Encoder Mode
    2. Parameter Settings
       1. Counter Settings
-         1. Prescaler (PSC): 0
+         1. Prescaler (PSC): 2-1
          2. Counter Period (AutoReload Register): 10
          3. auto-reload preload: Enable
       2. Encoder
          1. Encoder Mode: Encoder Mode TI1
          2. Parameters for Channel 1
             1. Polarity: Rising Edge
+            2. Input Filter: 15
          3. Parameters for Channel 2
             1. Polarity: Rising Edge
+            2. Input Filter: 15
+5. TIM3
+   1. Mode
+      1. Clock Source: Internal Clock
+      2. Channel1: PWM Generation CH1
+   2. Parameter Settings
+      1. Counter Settings
+         1. Prescaler (PSC): 72-1
+         2. Counter Period (AutoReload Register): 10-1
+         3. auto-reload preload: Enable
+6. I2C2/Mode: I2C
+   1. Parameter Settings/Master features
+      1. I2C Speed Mode: Fast Mode
 
 ```c
 HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_1);
@@ -438,3 +544,194 @@ uint16_t cnt = __HAL_TIM_GET_COUNTER(&htim3);
 UART_Printf(&huart1, "Encoder = %u", cnt);
 HAL_Delay(500);
 ```
+
+```c
+HAL_TIM_Encoder_Start(&htim1, TIM_CHANNEL_ALL);
+HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);
+
+HAL_Delay(20);
+OLED_Init();
+
+uint32_t counter = 0;
+char message[32] = "";
+while (1)
+{
+   counter = __HAL_TIM_GET_COUNTER(&htim1);
+   sprintf(message, "counter: %lu", counter);   __HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_1, counter);
+
+   OLED_NewFrame();
+   OLED_PrintString(13, 0, message, &font15x15, OLED_COLOR_NORMAL);
+   OLED_DrawRectangle(13, 25, 101, 12, OLED_COLOR_NORMAL);
+   OLED_DrawFilledRectangle(13, 26, counter * 10, 11, OLED_COLOR_NORMAL);
+   OLED_ShowFrame();
+
+   HAL_Delay(500);
+}
+```
+
+#### 实验：舵机
+
+1. SYS/Debug: Serial Wire
+2. RCC
+   1. Mode/High Speed Clock (HSE): Crystal/Ceramic Resonator
+      1. Clock Configuration/HCLK: 72
+3. TIM1
+   1. Mode
+      1. Combined Channels: Encoder Mode
+   2. Parameter Settings
+      1. Counter Settings
+         1. Prescaler (PSC): 2-1
+         2. Counter Period (AutoReload Register): 20
+         3. auto-reload preload: Enable
+      2. Encoder
+         1. Encoder Mode: Encoder Mode TI1
+         2. Parameters for Channel 1
+            1. Polarity: Rising Edge
+            2. Input Filter: 15
+         3. Parameters for Channel 2
+            1. Polarity: Rising Edge
+            2. Input Filter: 15
+4. TIM4
+   1. Mode
+      1. Clock Source: Internal Clock
+      2. Channel3: PWM Generation CH3
+   2. Parameter Settings
+      1. Counter Settings
+         1. Prescaler (PSC): 720-1
+         2. Counter Period (AutoReload Register): 2000-1
+         3. auto-reload preload: Enable
+5. I2C2/Mode: I2C
+   1. Parameter Settings/Master features
+      1. I2C Speed Mode: Fast Mode
+
+```c
+HAL_TIM_Encoder_Start(&htim1, TIM_CHANNEL_ALL);
+HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
+
+HAL_Delay(20);
+OLED_Init();
+
+uint32_t counter = 0;
+uint32_t duty = 0;
+char message[32] = "";
+
+while (1)
+{
+   counter = __HAL_TIM_GET_COUNTER(&htim1);
+   duty = (10 * counter / 20.f + 2.5f) / 100.f * 2000;
+   __HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_3, duty);
+
+   sprintf(message, "counter: %lu", counter);
+   OLED_NewFrame();
+   OLED_PrintString(13, 0, message, &font15x15, OLED_COLOR_NORMAL);
+   OLED_DrawRectangle(13, 25, 101, 12, OLED_COLOR_NORMAL);
+   OLED_DrawFilledRectangle(13, 26, counter * 5, 11, OLED_COLOR_NORMAL);
+   OLED_ShowFrame();
+
+   HAL_Delay(500);
+}
+```
+
+#### 实验：电机 DRV8833
+
+- IN1高+IN2低：正转
+  - IN1输入PWM（快衰减）：占空比越大，速度越快
+  - IN2输入PWM（慢衰减）：占空比越小，速度越快
+- IN1低+IN2高：反转
+  - IN2输入PWM（快衰减）：占空比越大，速度越快
+  - IN1输入PWM（慢衰减）：占空比越小，速度越快
+- IN1高+IN2高：刹车（慢衰减）
+- IN1低+IN2低：滑行（快衰减）
+
+1. SYS/Debug: Serial Wire
+2. RCC
+   1. Mode/High Speed Clock (HSE): Crystal/Ceramic Resonator
+      1. Clock Configuration/HCLK: 72
+3. TIM1
+   1. Mode
+      1. Combined Channels: Encoder Mode
+   2. Parameter Settings
+      1. Counter Settings
+         1. Prescaler (PSC): 2-1
+         2. Counter Period (AutoReload Register): 10
+         3. auto-reload preload: Enable
+      2. Encoder
+         2. Parameters for Channel 1
+            2. Input Filter: 15
+         3. Parameters for Channel 2
+            2. Input Filter: 15
+4. TIM2
+   1. Mode
+      1. Clock Source: Internal Clock
+      2. Channel1: PWM Generation CH1
+      3. Channel2: PWM Generation CH2
+   2. Parameter Settings
+      1. Counter Settings
+         1. Prescaler (PSC): 72-1
+         2. Counter Period (AutoReload Register): 100-1
+         3. auto-reload preload: Enable
+5. I2C2/Mode: I2C
+   1. Parameter Settings/Master features
+      1. I2C Speed Mode: Fast Mode
+
+Note: jump wire cannot pass voltage to motor for unknown reason.
+
+- solved by changing to more solid wires.
+
+```c
+DRV8833_Init();
+HAL_TIM_Encoder_Start(&htim1, TIM_CHANNEL_ALL);
+
+HAL_Delay(20);
+OLED_Init();
+
+uint32_t counter = 0;
+uint32_t speed = 0;
+char message[32] = "";
+const uint32_t MID_COUNT = 20;
+const uint32_t MID_COUNT_H = MID_COUNT / 2;
+
+while (1)
+{
+   counter = __HAL_TIM_GET_COUNTER(&htim1);
+   if (MID_COUNT > counter) {
+      speed = (MID_COUNT_H > counter) ? counter : MID_COUNT - counter;
+      DRV8833_Forward(speed * 10);
+   } else {
+      speed = counter - MID_COUNT;
+      speed = (MID_COUNT_H > speed) ? speed : MID_COUNT - speed;
+      DRV8833_Backward(speed * 10);
+   }
+
+   sprintf(message, "counter: %lu", counter);
+   OLED_NewFrame();
+   OLED_PrintString(3, 0, message, &font15x15, OLED_COLOR_NORMAL);
+   OLED_DrawRectangle(3, 25, 121, 12, OLED_COLOR_NORMAL);
+   OLED_DrawFilledRectangle(3, 26, counter * 3, 11, OLED_COLOR_NORMAL);
+   OLED_ShowFrame();
+
+   HAL_Delay(500);
+}
+```
+
+#### 实验：电机 TB6612
+
+- STBY高：工作；STBY低：待机
+- 刹车：IN1高+IN2高+PWM高/低
+- 滑行：IN1低+IN2低+PWM高
+- IN1高+IN2低：正转
+  - PWM：占空比越大，速度越快
+  - PWM低：刹车
+- IN1低+IN2高：反转
+  - PWM：占空比越大，速度越快
+  - PWM低：刹车
+
+1. TIM2
+   1. Mode
+      1. Clock Source: Internal Clock
+      2. Channel3: PWM Generation CH3
+   2. Parameter Settings
+      1. Counter Settings
+         1. Prescaler (PSC): 72-1
+         2. Counter Period (AutoReload Register): 100-1
+         3. auto-reload preload: Enable

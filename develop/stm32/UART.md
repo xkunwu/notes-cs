@@ -4,7 +4,7 @@
 ### 串口引脚
 
 - Tx：数据发送引脚；Rx：数据接收引脚
-- 双方交叉连接
+- 全双工：双方交叉连接
 
 ### 串口的数据帧格式
 
@@ -27,8 +27,9 @@
 #### UART vs USART
 
 - UART (Universal Asynchronous Receiver/Transmitter)：通用异步收发器
+  - 双方时钟必须保持一致，且选用相同的波特率
 - USART (Universal Synchronous/Asynchronous Receiver/Transmitter)：通用同步/异步收发器
-  - CK：时钟线
+  - 通过CK 时钟线提供同步脉冲信号
 
 ### 实验：简单发送数据
 

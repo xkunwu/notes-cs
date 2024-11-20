@@ -7,7 +7,7 @@
   - 模拟信号：时间、幅度都连续，自然界
   - 数字信号：时间、幅度都离散，计算机
 - 采样深度：用多少位二进制数来表示一个采样点
-  - n位：分成2^n - 1份
+  - n位：分成$2^n - 1$份
 - 逐次逼近型 SAR (Successive Approximation Register)：类比于天平称重
   - 比较器：电压发生器 vs 采样保持电路
 
@@ -53,6 +53,8 @@
       3. External Trigger Conversion Source: Regular Conversion launched by software
 
 ```c
+HAL_ADCEx_Calibration_Start(&hadc1);
+
 // 1. Start ADC
 HAL_ADC_Start(&hadc1);
 
@@ -86,7 +88,7 @@ CCx (Capture Compare x Event)：捕获/比较x事件
 - TRGO (Trigger Output)：触发输出，输出TRGI的控制信号
   - Update 更新：每产生一个Update事件（CNT溢出），就向TRGO输出一个脉冲
 
-#### 实验：定时触发采集
+#### 实验：定时器触发采集
 
 1. SYS/Debug: Serial Wire
 2. USART1/Mode: Asynchronous
@@ -94,7 +96,7 @@ CCx (Capture Compare x Event)：捕获/比较x事件
    1. GPIO mode: Output Push Pull
    2. GPIO output level: low
    3. Maximum output speed: Low
-4. ADC1
+4. ADC1/Parameter Settings
    1. ADC_Regular_Conversion Mode
       1. Enable Regular Conversions: Enable
       2. Number of Conversion: 1
@@ -113,20 +115,22 @@ CCx (Capture Compare x Event)：捕获/比较x事件
 
 ```c
 HAL_TIM_Base_Start(&htim3);
+// 1. Start ADC
+HAL_ADCEx_Calibration_Start(&hadc1);
 HAL_ADC_Start(&hadc1);
 
 while (1)
 {
-    // 1. Poll for Conversion
+    // 2. Poll for Conversion
     HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
 
-    // 2. Get result
+    // 3. Get result
     uint32_t dr = HAL_ADC_GetValue(&hadc1);
 
-    // 3. Convert result to voltage
+    // 4. Convert result to voltage
     float voltage = dr * 3.3f / 4096;
 
-    // 4. Send voltage to UART
+    // 5. Send voltage to UART
     char buffer[32];
     sprintf(buffer, "%.3f\n", voltage);
     HAL_UART_Transmit(&huart1, (uint8_t *)buffer, strlen(buffer), HAL_MAX_DELAY);
@@ -134,5 +138,22 @@ while (1)
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET); // on
     else // bright
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET); // off
+}
+```
+
+#### 实验：定时器连续触发采集
+
+- ADC1/Parameter Settings/ADC Settings/Continuous Conversion Mode: Enabled
+
+```c
+// 1. Start ADC
+HAL_ADCEx_Calibration_Start(&hadc1);
+HAL_ADC_Start(&hadc1);
+// // 2. Poll for Conversion
+// HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
+while (1)
+{
+  // 3. Get result
+  uint32_t dr = HAL_ADC_GetValue(&hadc1);
 }
 ```

@@ -7,6 +7,12 @@ Windows Firewall > Advanced Settings > Inbound Rules, enable all the rules with 
 
 - File and Printer Sharing (Echo Request - ICMPv4-In)
 
+### vmmemwsl takes huge mem and cpu time
+
+```sh
+wsl --shutdown
+```
+
 ### SSH into WSL2
 
 #### [Ubuntu 源](https://mirrors.ustc.edu.cn/help/ubuntu.html)
