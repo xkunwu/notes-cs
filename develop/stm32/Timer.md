@@ -653,7 +653,7 @@ while (1)
    2. Parameter Settings
       1. Counter Settings
          1. Prescaler (PSC): 2-1
-         2. Counter Period (AutoReload Register): 10
+         2. Counter Period (AutoReload Register): 40
          3. auto-reload preload: Enable
       2. Encoder
          2. Parameters for Channel 1
